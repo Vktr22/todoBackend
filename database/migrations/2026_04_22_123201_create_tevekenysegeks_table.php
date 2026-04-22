@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('tevekenysegeks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("kat_id");
+            $table->string("tev_nev");
+            $table->string("allapot");
             $table->timestamps();
         });
     }
