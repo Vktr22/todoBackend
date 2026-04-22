@@ -13,5 +13,5 @@ use App\Http\Controllers\KategoriakController;
 */
 
 Route::get('/tevekenysegek', [TevekenysegekController::class, 'index']);
-Route::post('/tevekenysegek', [TevekenysegekController::class, 'create']);
+Route::post('/tevekenysegek', [TevekenysegekController::class, 'store']);
 Route::delete('/tevekenysegek/{id}', [TevekenysegekController::class, 'destroy']);
