@@ -1,19 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
 
 use App\Models\kategoriak;
+use App\Models\tevekenysegek;
 use App\Http\Requests\StorekategoriakRequest;
 use App\Http\Requests\UpdatekategoriakRequest;
 
 class KategoriakController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
-        //
+        return kategoriak::with('id,katnev')
+            ->select('id', 'katnev')
+            ->findOrFail($id);
     }
 
     /**
@@ -21,7 +23,10 @@ class KategoriakController extends Controller
      */
     public function create()
     {
-        //
+        return kategoriak::create([
+            'id' => $id,
+            'katnev'=> $katnev,
+        ]);
     }
 
     /**

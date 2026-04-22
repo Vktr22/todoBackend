@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class tevekenysegek extends Model
 {
-    /** @use HasFactory<\Database\Factories\TevekenysegekFactory> */
-    use HasFactory;
+    //use HasFactory;
+    protected $fillable = [
+        'kat_id',
+        'tev_nev'
+    ];
 }

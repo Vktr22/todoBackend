@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class kategoriak extends Model
 {
-    /** @use HasFactory<\Database\Factories\KategoriakFactory> */
-    use HasFactory;
+    //use HasFactory;
+    protected $fillable = [
+        'katnev'
+    ];
+
 }
