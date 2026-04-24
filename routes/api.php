@@ -12,6 +12,10 @@ use App\Http\Controllers\KategoriakController;
 
 */
 
+
 Route::get('/tevekenysegek', [TevekenysegekController::class, 'index']);
-Route::post('/tevekenysegek', [TevekenysegekController::class, 'store']);
-Route::delete('/tevekenysegek/{id}', [TevekenysegekController::class, 'destroy']);
+Route::get('/tevekenysegek/kategoria/{id}', [TevekenysegekController::class, 'byKategoriak']);
+
+Route::post('/tevekenyseg', [TevekenysegekController::class, 'store']);
+Route::put('/tevekenyseg/{id}', [TevekenysegekController::class, 'update']);
+Route::delete('/tevekenyseg/{id}', [TevekenysegekController::class, 'destroy']);
