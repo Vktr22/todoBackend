@@ -11,12 +11,11 @@ use App\Http\Requests\UpdatetevekenysegekRequest;
 class TevekenysegekController extends Controller
 {
     
-    public function index($id)
+    public function index()
     {
         return response()->json(
             tevekenysegek::query()
                 ->select(['id', 'kat_id', 'tev_nev', 'allapot'])
-                ->where('kat_id', $id)
                 ->orderBy('id', 'desc') //asc
                 ->get()
         );
