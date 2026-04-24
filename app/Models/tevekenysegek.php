@@ -10,6 +10,7 @@ class tevekenysegek extends Model
     //use HasFactory;
     protected $fillable = [
         'kat_id',
-        'tev_nev'
+        'tev_nev',
+        'allapot',
     ];
 }
