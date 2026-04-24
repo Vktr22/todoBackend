@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\tevekenysegek;
 use App\Models\kategoriak;
 use App\Http\Requests\StoretevekenysegekRequest;
@@ -10,62 +11,86 @@ use App\Http\Requests\UpdatetevekenysegekRequest;
 class TevekenysegekController extends Controller
 {
     
-    public function index()
+    public function index($id)
     {
-        return tevekenysegek::where('kat_id', kategoriak::id())
-            ->with('id,kat_id,tev_nev,allapot')
-            ->get();
+        return response()->json(
+            tevekenysegek::query()
+                ->select(['id', 'kat_id', 'tev_nev', 'allapot'])
+                ->where('kat_id', $id)
+                ->orderBy('id', 'desc') //asc
+                ->get()
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function store()
-    {   
-        kategoriak::where('id')->findOrFail($kat_id);
-        $exists = tevekenysegek::where('kat_id', $kat_id);
-        if(!$exists){
-            return response()->json(['message' => 'Ezzel az id-val egyenlőre nem létezik kategória']);
-        }
-        return tevekenysegek::create([
-            'id' => $id,
-            'kat_id' => $kat_id,
-            'tev_nev' => $tev_nev,
-            'allapot' => $allapot
+    public function byKategoriak($id)
+    {
+        return response()->json(
+            tevekenysegek::query()
+                ->select(['id', 'kat_id', 'tev_nev', 'allapot'])
+                ->where('kat_id', $id)
+                ->orderBy('id', 'desc')
+                ->get()
+        );
+    }
+
+    
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'kat_id' => ['required', 'integer'],
+            'tev_nev' => ['required', 'string', 'max:255'],
         ]);
+
+        $todo = tevekenysegek::create([
+            'kat_id' => $data['kat_id'],
+            'tev_nev' => $data['tev_nev'],
+            'allapot' => '0', // 0 = nincs kész
+        ]);
+
+        return response()->json($todo, 201);
     }
 
     
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(tevekenysegek $tevekenysegek)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $todo = tevekenysegek::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(tevekenysegek $tevekenysegek)
-    {
-        //
-    }
+        // két módot engedünk:
+        // - ha küldesz allapot-ot, beállítjuk
+        // - ha nem küldesz, akkor toggle-oljuk
+        $validated = $request->validate([
+            'allapot' => ['nullable', 'in:0,1,"0","1"'],
+            'tev_nev' => ['nullable', 'string', 'max:255'],
+            'kat_id' => ['nullable', 'integer'],
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatetevekenysegekRequest $request, tevekenysegek $tevekenysegek)
-    {
-        //
+        if (array_key_exists('allapot', $validated)) {
+            $todo->allapot = (string)$validated['allapot'];
+        } else {
+            $todo->allapot = $todo->allapot === '1' ? '0' : '1';
+        }
+
+        if (array_key_exists('tev_nev', $validated)) {
+            $todo->tev_nev = $validated['tev_nev'];
+        }
+        if (array_key_exists('kat_id', $validated)) {
+            $todo->kat_id = $validated['kat_id'];
+        }
+
+        $todo->save();
+
+        return response()->json($todo);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(tevekenysegek $tevekenysegek)
+    public function destroy($id)
     {
-        $tevekenysegek = tevekenysegek::findOrFail($id);
+        $todo = tevekenysegek::findOrFail($id);
+        $todo->delete();
+
+        return response()->json(['message' => 'deleted']);
     }
 }
